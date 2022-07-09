@@ -1,6 +1,6 @@
 {
   "name": "imk-yfd-cli",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "ms-store脚手架，快速复制出项目模板，自动配置。v1.0.0:支持自主选择平台配置",
   "main": "bin/init.js",
   "scripts": {
