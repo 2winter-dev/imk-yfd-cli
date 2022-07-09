@@ -1,0 +1,24 @@
+{
+  "name": "imk",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bin/init.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "module",
+  "bin": {
+    "imk-cli": "bin/init.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^5.0.1",
+    "commander": "^9.3.0",
+    "fs": "^0.0.1-security",
+    "handlebars": "^4.7.7",
+    "inquirer": "^9.0.0",
+    "ora": "^6.1.2"
+  }
+}
