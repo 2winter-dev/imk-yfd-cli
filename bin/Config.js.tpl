@@ -15,9 +15,9 @@ export default {
      * Step 1: change to your website URL and the wooCommerce API consumeKey
      */
     WooCommerce: {
-        url: "{{store_url}}",
-        consumerKey:"{{store_key}}",
-        consumerSecret:"{{store_sec}}",
+        url: "{{new_item_url}}",
+        consumerKey:"{{new_item_woo_key}}",
+        consumerSecret:"{{new_item_woo_sec}}",
     },
 
     /**
@@ -332,7 +332,7 @@ export default {
 
     // Stripe set up
     Stripe:{
-        publishableKey:"{{stripe_key}}",
+        publishableKey:"{{new_item_stripe_key}}",
     },
 
     iMarkerConfig:"IndexCat"
