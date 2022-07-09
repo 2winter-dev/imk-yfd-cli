@@ -11,7 +11,8 @@
     "imk-cli": "bin/init.js"
   },
   "keywords": [],
-  "author": "yfd:630020826@qq.com",
+  "author": "yfd_winter",
+  "email": "630020826@qq.com",
   "license": "ISC",
   "dependencies": {
     "chalk": "^5.0.1",
