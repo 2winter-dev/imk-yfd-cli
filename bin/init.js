@@ -74,19 +74,19 @@ const new_item_config = {};
     }
     new_item_config.new_item_stripe_key = w_obj.new_item_stripe_key;
 
-    w_obj = await inquirer.prompt({name: 'new_item_oneSignal_id', message: '输入oneSignal id'}, '');
-    if (!w_obj.new_item_oneSignal_id) {
-        console.log(chalk.red('oneSignal id不可以为空！'));
-        process.exit();
-    }
-    new_item_config.oneSignal_id = w_obj.new_item_oneSignal_id;
+    // w_obj = await inquirer.prompt({name: 'new_item_oneSignal_id', message: '输入oneSignal id'}, '');
+    // if (!w_obj.new_item_oneSignal_id) {
+    //     console.log(chalk.red('oneSignal id不可以为空！'));
+    //     process.exit();
+    // }
+    // new_item_config.oneSignal_id = w_obj.new_item_oneSignal_id;
 
-    w_obj = await inquirer.prompt({name: 'new_item_android_package', message: '输入android包名'}, '');
-    if (!w_obj.new_item_android_package) {
-        console.log(chalk.red('android包名不可以为空！'));
-        process.exit();
-    }
-    new_item_config.new_item_android_package = w_obj.new_item_android_package;
+    // w_obj = await inquirer.prompt({name: 'new_item_android_package', message: '输入android包名'}, '');
+    // if (!w_obj.new_item_android_package) {
+    //     console.log(chalk.red('android包名不可以为空！'));
+    //     process.exit();
+    // }
+    // new_item_config.new_item_android_package = w_obj.new_item_android_package;
 
     w_obj = await inquirer.prompt({name: 'new_item_ios_bundle', message: '输入iOS BundleID'}, '');
     if (!w_obj.new_item_ios_bundle) {
@@ -94,6 +94,23 @@ const new_item_config = {};
         process.exit();
     }
     new_item_config.new_item_ios_bundle = w_obj.new_item_ios_bundle;
+
+
+    w_obj = await inquirer.prompt({name: 'ios_services_path', message: '输入iOS:GoogleService-Info.list绝对路径'}, '');
+    if (!w_obj.ios_services_path) {
+        console.log(chalk.red('iOS:GoogleService-Info.list不可以为空！'));
+        process.exit();
+    }
+    new_item_config.ios_services_path  = w_obj.ios_services_path;
+
+
+    w_obj = await inquirer.prompt({name: 'android_services_path', message: '输入Android:google-services.json绝对路径'}, '');
+    if (!w_obj.android_services_path) {
+        console.log(chalk.red('Android:google-services.json不可以为空！'));
+        process.exit();
+    }
+    new_item_config.android_services_path = w_obj.android_services_path;
+
 
     const TPL_PATH ='github:winterOmii/ms_store_tpl#main';
     new_item_config.tpl_path = TPL_PATH;
@@ -130,11 +147,26 @@ const new_item_config = {};
                 let newPreConfig = preConfigTpl(new_item_config);
                 writeFileSync(new_item_path+'/src/common/Config.js',newPreConfig);
                 spinner.prefixText='imk-yfd-cli:100%'
-                spinner.succeed(chalk.green('配置更新完成,请cd 到'+new_item_path+'开始工作...'));
-                spinner.succeed(chalk.yellow('1.iOS接下来需要： 1.cd ios && pod install 安装iOS端依赖后运行react-native run-ios'))
-                spinner.succeed(chalk.yellow('2.iOS端使用Xcode打开xwork:space!!!!文件后，设置开发者签名与BundleID以及权限,复制FacebookSDK到～/'))
-                spinner.succeed(chalk.yellow('3.设置firebase与woo后端,提示：下载对应的service文件'))
-                spinner.succeed(chalk.yellow('4.如果无法运行，请执行对应平台:src/scripts/*.sh'))
+                spinner.succeed(chalk.green('配置更新SUCCESS'));
+                ora().start('开始复制Service')
+                if(!existsSync(new_item_config.android_services_path)){
+                    ora().fail(new_item_config.android_services_path + '文件不存在或无法读取！');
+                    process.exit();
+                }
+
+                if(!existsSync(new_item_config.ios_services_path)){
+                    ora().fail(new_item_config.ios_services_path + '文件不存在或无法读取！');
+                    process.exit();
+                }
+                //复制Services
+                cpSync(new_item_config.android_services_path,new_item_path+'/android/app/google-services.json');
+                cpSync(new_item_config.ios_services_path,new_item_path+'/ios/GoogleService-Info.list');
+                ora().succeed('service更新完成')
+                spinner = ora().start('已完成模板配置，请CD到'+w_obj.name+'开始工作...')
+                spinner.succeed(chalk.yellow('1.iOS接下来需要：安装POD，更改BundleId与开发者，复制FacebookSDK到～/'))
+                spinner.succeed(chalk.yellow('2.Android端执行RN命令'))
+                spinner.succeed(chalk.yellow('3.Web后台：设置firebase（短信，Database，Services）与WP后端（key，sec，API ）'))
+                spinner.succeed(chalk.yellow('4.如果无法运行，请查看对应平台:src/scripts/*.sh'))
                 process.exit();
             }catch (e){
                 spinner.fail(chalk.red('更新配置错误：'+JSON.stringify(e)));

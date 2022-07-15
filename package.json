@@ -10,7 +10,12 @@
   "bin": {
     "imk-cli": "bin/init.js"
   },
-  "keywords": ["msstore","imarker","yfd","inspireUI"],
+  "keywords": [
+    "msstore",
+    "imarker",
+    "yfd",
+    "inspireUI"
+  ],
   "author": "yfd_winter",
   "email": "630020826@qq.com",
   "license": "ISC",
