@@ -81,12 +81,12 @@ const new_item_config = {};
     // }
     // new_item_config.oneSignal_id = w_obj.new_item_oneSignal_id;
 
-    // w_obj = await inquirer.prompt({name: 'new_item_android_package', message: '输入android包名'}, '');
-    // if (!w_obj.new_item_android_package) {
-    //     console.log(chalk.red('android包名不可以为空！'));
-    //     process.exit();
-    // }
-    // new_item_config.new_item_android_package = w_obj.new_item_android_package;
+    w_obj = await inquirer.prompt({name: 'new_item_android_package', message: '输入android包名'}, '');
+    if (!w_obj.new_item_android_package) {
+        console.log(chalk.red('android包名不可以为空！'));
+        process.exit();
+    }
+    new_item_config.new_item_android_package = w_obj.new_item_android_package;
 
     w_obj = await inquirer.prompt({name: 'new_item_ios_bundle', message: '输入iOS BundleID'}, '');
     if (!w_obj.new_item_ios_bundle) {
@@ -112,7 +112,7 @@ const new_item_config = {};
     new_item_config.android_services_path = w_obj.android_services_path;
 
 
-    const TPL_PATH ='github:winterOmii/ms_store_tpl#main';
+    const TPL_PATH ='github:winterOmii/ms_store_tpl#master';
     new_item_config.tpl_path = TPL_PATH;
 
     console.log(chalk.green('配置如下:'))
@@ -150,19 +150,97 @@ const new_item_config = {};
                 spinner.succeed(chalk.green('配置更新SUCCESS'));
                 ora().start('开始复制Service')
                 if(!existsSync(new_item_config.android_services_path)){
-                    ora().fail(new_item_config.android_services_path + '文件不存在或无法读取！');
+                    ora().fail(new_item_config.android_services_path + ':services文件不存在或无法读取！');
                     process.exit();
                 }
 
                 if(!existsSync(new_item_config.ios_services_path)){
-                    ora().fail(new_item_config.ios_services_path + '文件不存在或无法读取！');
+                    ora().fail(new_item_config.ios_services_path + ':services文件不存在或无法读取！');
                     process.exit();
                 }
                 //复制Services
                 cpSync(new_item_config.android_services_path,new_item_path+'/android/app/google-services.json');
                 cpSync(new_item_config.ios_services_path,new_item_path+'/ios/GoogleService-Info.list');
-                ora().succeed('service更新完成')
-                spinner = ora().start('已完成模板配置，请CD到'+w_obj.name+'开始工作...')
+                ora().succeed('service更新完成');
+                //更新android包名
+                ora().start('更新android包名...');
+                //更新app/build.gradle
+                try{
+                    let gradleTpl = Handlebars.compile(readFileSync(new_item_path+'/android/app/build.gradle').toString());
+                    if(!gradleTpl){
+                        ora().fail(new_item_path+'/android/app/build.gradle'+'文件读取失败')
+                        process.exit();
+                    }
+                    let newGradle = gradleTpl(new_item_config);
+                    writeFileSync(new_item_path+'/android/app/build.gradle',newGradle);
+                    ora().succeed('更新app/build.gradle成功')
+                }catch (e){
+                    ora().fail('更新app/build.gradle失败自动跳过...');
+                    console.log(chalk.red(e));
+                }
+                //根系AndroidManifest.xml
+                try{
+                    let xmlTpl = Handlebars.compile(readFileSync(new_item_path+'/android/app/src/main/AndroidManifest.xml').toString());
+                    if(!xmlTpl){
+                        ora().fail(new_item_path+'/android/app/src/main/AndroidManifest.xml'+'文件读取失败')
+                        process.exit();
+                    }
+                    let newXml = xmlTpl(new_item_config);
+                    writeFileSync(new_item_path+'/android/app/src/main/AndroidManifest.xml',newXml);
+                    ora().succeed('更新/android/app/src/main/AndroidManifest.xml成功')
+                }catch (e){
+                    ora().fail('更新/android/app/src/main/AndroidManifest.xml失败自动跳过...');
+                    console.log(chalk.red(e));
+                }
+                //更新java包名
+                try{
+                    let javaTpl = Handlebars.compile(readFileSync(new_item_path+'/android/app/src/main/java/com/msstore/poetichouse/MainActivity.java').toString());
+                    if(!javaTpl){
+                        ora().fail(new_item_path+'MainActivity.java'+'文件读取失败')
+                        process.exit();
+                    }
+                    let newJava =javaTpl(new_item_config);
+                    writeFileSync(new_item_path+'/android/app/src/main/java/com/msstore/poetichouse/MainActivity.java',newJava);
+
+                    let javaTpl2 = Handlebars.compile(readFileSync(new_item_path+'/android/app/src/main/java/com/msstore/poetichouse/SplashActivity.java').toString());
+                    if(!javaTpl2){
+                        ora().fail(new_item_path+'/SplashActivity.java'+'文件读取失败')
+                        process.exit();
+                    }
+                    let newJava2 =javaTpl2(new_item_config);
+                    writeFileSync(new_item_path+'/android/app/src/main/java/com/msstore/poetichouse/SplashActivity.java',newJava2);
+
+                    let javaTpl3 = Handlebars.compile(readFileSync(new_item_path+'/android/app/src/main/java/com/msstore/poetichouse/MainApplication.java').toString());
+                    if(!javaTpl3){
+                        ora().fail(new_item_path+'/MainApplication.java'+'文件读取失败')
+                        process.exit();
+                    }
+                    let newJava3 =javaTpl3(new_item_config);
+                    writeFileSync(new_item_path+'/android/app/src/main/java/com/msstore/poetichouse/MainApplication.java',newJava3);
+
+                    ora().succeed('更新java包完成')
+
+                }catch (e){
+                    ora().fail('更新/android/app/src/main/java包失败自动跳过...');
+                    console.log(chalk.red(e));
+                }
+                //更新buk
+                ora().start('开始更新buck');
+                try{
+                    let BUCKTpl = Handlebars.compile(readFileSync(new_item_path+'/android/app/BUCK').toString());
+                    if(!BUCKTpl ){
+                        ora().fail(new_item_path+'/android/app/BUCK'+'文件读取失败')
+                        process.exit();
+                    }
+                    let newBUCK = BUCKTpl(new_item_config);
+                    writeFileSync(new_item_path+'/android/app/BUCK',newBUCK);
+                    ora().succeed('更新/android/app/src/main/BUCK成功')
+                }catch (e){
+                    ora().fail('更新/android/app/src/main/BUCK失败自动跳过...');
+                    console.log(chalk.red(e));
+                }
+                ora().succeed('BUCK更新完成');
+                spinner = ora().start('已完成模板配置，请CD到'+w_obj.name+'，执行react-native run-android --deviceId="你的设备ID"...')
                 spinner.succeed(chalk.yellow('1.iOS接下来需要：安装POD，更改BundleId与开发者，复制FacebookSDK到～/'))
                 spinner.succeed(chalk.yellow('2.Android端执行RN命令'))
                 spinner.succeed(chalk.yellow('3.Web后台：设置firebase（短信，Database，Services）与WP后端（key，sec，API ）'))

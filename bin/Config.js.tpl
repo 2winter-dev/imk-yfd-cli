@@ -330,6 +330,15 @@ export default {
         publishableKey:"{{new_item_stripe_key}}",
     },
 
-    iMarkerConfig:"IndexCat"
+    iMarkerConfig:"IndexCat",
+     iMakerExtConfig:{
+         addressConfig:{
+          address:'未配置',
+          phone:'未配置',
+          email:'未配置',
+          detail:'未配置',
+         }
+
+      }
 
 };
