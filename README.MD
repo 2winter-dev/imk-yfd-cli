@@ -2,7 +2,7 @@
 #### MS-Store-cli React-Native InspireUI模板项目脚手架
 
 <img src="https://img.shields.io/badge/imk--yfd--cli-MS--STORE%E6%A8%A1%E6%9D%BF%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B-brightgreen">
-<img src="https://img.shields.io/badge/imk--yfd--cli-v1.0.1-brightgreen">
+<img src="https://img.shields.io/badge/imk--yfd--cli-v1.0.13-brightgreen">
 
 
 - 支持自定义模板源（支持Git仓库）
@@ -50,7 +50,7 @@
 
 ### Some Errors
 
-1.google-services.json 包名不匹配
+1.google-services.json 包名不匹配,你需要从firebase下载对应的文件
 
 
 

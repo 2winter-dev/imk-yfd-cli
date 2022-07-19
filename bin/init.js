@@ -21,11 +21,11 @@ const new_item_config = {};
     let platform = (await  inquirer.prompt({name:'platform',message:'请提前准备好：WP后台密钥与其他配置密钥,是否使用OSX系统？',type:'confirm',default:'Y'},'')).platform;
     if(platform){
         platform = 'OSX';
-        CURRENT_PATH = current_pwd + '/node_modules/imk-yfd-cli/bin/Config.js.tpl'
+        CURRENT_PATH = current_pwd + '/node_modules/imk-yfd-cli/TPL/Config.js.tpl'
 
     }else{
         platform = 'Windows';
-        CURRENT_PATH = current_pwd + '\\node_modules\\imk-yfd-cli\\bin\\Config.js.tpl'
+        CURRENT_PATH = current_pwd + '\\node_modules\\imk-yfd-cli\\TPL\\Config.js.tpl'
 
     }
     console.log(chalk.yellow('当前项目配置文件路径:'+CURRENT_PATH ));
@@ -121,13 +121,11 @@ const new_item_config = {};
         process.exit();
     }
     TPL_PATH = w_obj.remote_git_path;
-
+    new_item_config.tpl_path = TPL_PATH;
     if(!TPL_PATH){
         ora().fail('请配置远程仓库:github:用户名/项目#分支');
         process.exit();
     }
-
-
     console.log(chalk.green('配置如下:'))
     console.table(new_item_config);
     let next_obj = await inquirer.prompt({type: 'confirm', name: 'next_confirm', message: ""}, '是否使用该配置进行初始化项目?');
@@ -208,6 +206,24 @@ const new_item_config = {};
                     ora().fail('更新/android/app/src/main/AndroidManifest.xml失败自动跳过...');
                     console.log(chalk.red(e));
                 }
+
+                //更新string.xml
+                try{
+
+                    let xml2Tpl = Handlebars.compile(readFileSync(new_item_path+'/android/app/src/main/res/values/strings.xml').toString());
+                    if(!xml2Tpl){
+                        ora().fail(new_item_path+'/android/app/src/main/res/values/strings.xml'+'文件读取失败')
+                        process.exit();
+                    }
+                    let newXml2 = xml2Tpl(new_item_config);
+                    writeFileSync(new_item_path+'/android/app/src/main/res/values/strings.xml',newXml2);
+                    ora().succeed('更新/android/app/src/main/res/values/strings.xml成功')
+                }catch (e){
+                    ora().fail('更新/android/app/src/main/res/values/strings.xml失败自动跳过...');
+                    console.log(chalk.red(e));
+
+                }
+
                 //更新java包名
                 try{
                     let javaTpl = Handlebars.compile(readFileSync(new_item_path+'/android/app/src/main/java/com/msstore/poetichouse/MainActivity.java').toString());

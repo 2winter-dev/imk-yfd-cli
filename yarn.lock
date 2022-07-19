@@ -540,15 +540,17 @@
   "resolved" "https://registry.npmmirror.com/ieee754/-/ieee754-1.2.1.tgz"
   "version" "1.2.1"
 
-"imk-yfd-cli@^1.0.0":
-  "integrity" "sha512-ryGEcEs7M+nb0JmAZ9RYdPpvCWrQnMljwKy/8hEODRjTKf2c1l0utJ1k69jf8YjIChLWejsdTlhfvr0NUU0lSw=="
-  "resolved" "https://registry.npmjs.org/imk-yfd-cli/-/imk-yfd-cli-1.0.0.tgz"
-  "version" "1.0.0"
+"imk-yfd-cli@^1.0.0", "imk-yfd-cli@^1.0.11":
+  "integrity" "sha512-v4tkb5wwcGM9b0ErkRgrgSmqWZTJ29GL5zX437cfCjx3O8xPdGppjLerYLv8WmRv6l/B066Vc/u9uak8FVqO4A=="
+  "resolved" "https://registry.npmjs.org/imk-yfd-cli/-/imk-yfd-cli-1.0.11.tgz"
+  "version" "1.0.11"
   dependencies:
     "chalk" "^5.0.1"
     "commander" "^9.3.0"
+    "download-git-repo" "^3.0.2"
     "fs" "^0.0.1-security"
     "handlebars" "^4.7.7"
+    "imk-yfd-cli" "^1.0.0"
     "inquirer" "^9.0.0"
     "ora" "^6.1.2"
 
