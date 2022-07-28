@@ -4,7 +4,7 @@
 import Images from "./Images";
 import Constants from "./Constants";
 import Icons from "./Icons";
-const hostUrl = "{{new_item_url}}}";
+const hostUrl = "{{new_item_url}}";
 export default {
     /**
      * Step 1: change to your website URL and the wooCommerce API consumeKey
@@ -85,7 +85,7 @@ export default {
     intro: [
         {
             key: "page1",
-            title: "Welcome to Poetic house!",
+            title: "Welcome !",
             // text: "Get the hottest fashion by trend and season right on your pocket.",
             icon: "ios-basket",
             colors: ["#0FF0B3", "#036ED9"],
@@ -152,8 +152,9 @@ export default {
                 text: "contactus",
                 routeName: "CustomPage",
                 params: {
-                    id: 10941,
-                    title: "contactus",
+
+                     url: `${hostUrl}/contactus/`
+
                 },
                 icon: Icons.MaterialCommunityIcons.Pin,
             },

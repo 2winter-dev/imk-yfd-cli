@@ -2,7 +2,6 @@
 
 import ora from 'ora';
 import chalk from 'chalk';
-import {program} from "commander";
 import path from "path";
 import Handlebars from 'handlebars';
 import {existsSync, mkdirSync, cpSync, rmdirSync, readFileSync, writeFileSync,rmSync,cp} from 'fs'
@@ -21,11 +20,11 @@ const new_item_config = {};
     let platform = (await  inquirer.prompt({name:'platform',message:'请提前准备好：WP后台密钥与其他配置密钥,是否使用OSX系统？',type:'confirm',default:'Y'},'')).platform;
     if(platform){
         platform = 'OSX';
-        CURRENT_PATH = current_pwd + '/node_modules/imk-yfd-cli/TPL/Config.js.tpl'
+        CURRENT_PATH = current_pwd + '/node_modules/imk-yfd-cli/bin/Config.js.tpl'
 
     }else{
         platform = 'Windows';
-        CURRENT_PATH = current_pwd + '\\node_modules\\imk-yfd-cli\\TPL\\Config.js.tpl'
+        CURRENT_PATH = current_pwd + '\\node_modules\\imk-yfd-cli\\bin\\Config.js.tpl'
 
     }
     console.log(chalk.yellow('当前项目配置文件路径:'+CURRENT_PATH ));
@@ -96,20 +95,20 @@ const new_item_config = {};
     new_item_config.new_item_ios_bundle = w_obj.new_item_ios_bundle;
 
 
-    // w_obj = await inquirer.prompt({name: 'ios_services_path', message: '输入iOS:GoogleService-Info.list绝对路径'}, '');
-    // if (!w_obj.ios_services_path) {
-    //     console.log(chalk.red('iOS:GoogleService-Info.list不可以为空！'));
-    //     process.exit();
-    // }
-    // new_item_config.ios_services_path  = w_obj.ios_services_path;
-    //
-    //
-    // w_obj = await inquirer.prompt({name: 'android_services_path', message: '输入Android:google-services.json绝对路径'}, '');
-    // if (!w_obj.android_services_path) {
-    //     console.log(chalk.red('Android:google-services.json不可以为空！'));
-    //     process.exit();
-    // }
-    // new_item_config.android_services_path = w_obj.android_services_path;
+    w_obj = await inquirer.prompt({name: 'ios_services_path', message: '输入iOS:GoogleService-Info.list绝对路径'}, '');
+    if (!w_obj.ios_services_path) {
+        // console.log(chalk.red('iOS:GoogleService-Info.list不可以为空！'));
+        // process.exit();
+    }
+    new_item_config.ios_services_path  = w_obj.ios_services_path;
+
+
+    w_obj = await inquirer.prompt({name: 'android_services_path', message: '输入Android:google-services.json绝对路径'}, '');
+    if (!w_obj.android_services_path) {
+        // console.log(chalk.red('Android:google-services.json不可以为空！'));
+        // process.exit();
+    }
+    new_item_config.android_services_path = w_obj.android_services_path;
 
 
 
@@ -157,25 +156,27 @@ const new_item_config = {};
             spinner.prefixText = 'imk-yfd-cli:98%';
             //读取模板文件
             try{
+
                 let preConfigTpl = Handlebars.compile(IMKC.toString());
                 let newPreConfig = preConfigTpl(new_item_config);
                 writeFileSync(new_item_path+'/src/common/Config.js',newPreConfig);
                 spinner.prefixText='imk-yfd-cli:100%'
                 spinner.succeed(chalk.green('配置更新SUCCESS'));
-                // ora().start('开始复制Service')
-                // if(!existsSync(new_item_config.android_services_path)){
-                //     ora().fail(new_item_config.android_services_path + ':services文件不存在或无法读取！');
-                //     process.exit();
-                // }
-                //
-                // if(!existsSync(new_item_config.ios_services_path)){
-                //     ora().fail(new_item_config.ios_services_path + ':services文件不存在或无法读取！');
-                //     process.exit();
-                // }
-                // //复制Services
-                // cpSync(new_item_config.android_services_path,new_item_path+'/android/app/google-services.json');
-                // cpSync(new_item_config.ios_services_path,new_item_path+'/ios/GoogleService-Info.list');
-                // ora().succeed('service更新完成');
+                ora().start('开始复制Service');
+                if(!existsSync(new_item_config.android_services_path)){
+                    ora().fail(new_item_config.android_services_path + ':services文件不存在或无法读取！');
+                   // process.exit();
+                }else{
+                    cpSync(new_item_config.android_services_path,new_item_path+'/android/app/google-services.json');
+                }
+
+                if(!existsSync(new_item_config.ios_services_path)){
+                    ora().fail(new_item_config.ios_services_path + ':services文件不存在或无法读取！');
+                  //  process.exit();
+                }else{
+                    cpSync(new_item_config.ios_services_path,new_item_path+'/ios/GoogleService-Info.list');
+                }
+
                 //更新android包名
                 ora().start('更新android包名...');
                 //更新app/build.gradle
@@ -217,7 +218,18 @@ const new_item_config = {};
                     }
                     let newXml2 = xml2Tpl(new_item_config);
                     writeFileSync(new_item_path+'/android/app/src/main/res/values/strings.xml',newXml2);
-                    ora().succeed('更新/android/app/src/main/res/values/strings.xml成功')
+                    ora().succeed('更新/android/app/src/main/res/values/strings.xml成功');
+
+                    //更新package.json
+
+                    let xml3Tpl = Handlebars.compile(readFileSync(new_item_path+'/package.json').toString());
+                    if(!xml3Tpl){
+                        ora().fail(new_item_path+'/package.json'+'文件读取失败')
+                        process.exit();
+                    }
+                    let newXml3 = xml3Tpl(new_item_config);
+                    writeFileSync(new_item_path+'/package.json',newXml3);
+                    ora().succeed('更新/package.json成功');
                 }catch (e){
                     ora().fail('更新/android/app/src/main/res/values/strings.xml失败自动跳过...');
                     console.log(chalk.red(e));
@@ -280,6 +292,7 @@ const new_item_config = {};
                 process.exit();
             }catch (e){
                 spinner.fail(chalk.red('更新配置错误：'+JSON.stringify(e)));
+                spinner.fail(chalk.red(e));
                 process.exit();
             }
         }

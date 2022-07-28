@@ -2,7 +2,7 @@
 #### MS-Store-cli React-Native InspireUI模板项目脚手架
 
 <img src="https://img.shields.io/badge/imk--yfd--cli-MS--STORE%E6%A8%A1%E6%9D%BF%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B-brightgreen">
-<img src="https://img.shields.io/badge/imk--yfd--cli-v1.0.13-brightgreen">
+<img src="https://img.shields.io/badge/imk--yfd--cli-v2.0.5-brightgreen">
 
 
 - 支持自定义模板源（支持Git仓库）
@@ -59,6 +59,12 @@
 v1.0.11
 
 1.fix Doc.
+
+
+v2.0.4
+
+1.fix Config.js.tpl Path .
+2.fix others bugs.
 
 
 > Find Me: winter_986@qq.com
