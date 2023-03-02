@@ -19,11 +19,10 @@ const new_item_config = {};
     let IMKC,CURRENT_PATH;
     let platform = (await  inquirer.prompt({name:'platform',message:'请提前准备好：WP后台密钥与其他配置密钥,是否使用OSX系统？',type:'confirm',default:'Y'},'')).platform;
     if(platform){
-        platform = 'OSX';
         CURRENT_PATH = current_pwd + '/node_modules/imk-yfd-cli/bin/Config.js.tpl'
 
     }else{
-        platform = 'Windows';
+
         CURRENT_PATH = current_pwd + '\\node_modules\\imk-yfd-cli\\bin\\Config.js.tpl'
 
     }
@@ -114,9 +113,9 @@ const new_item_config = {};
 
     let TPL_PATH ='';
     new_item_config.tpl_path = TPL_PATH;
-    w_obj = await inquirer.prompt({name: 'remote_git_path', message: '输入远程地址'}, '');
+    w_obj = await inquirer.prompt({name: 'remote_git_path', message: '输入远程地址 github:用户名/项目#分支'}, '');
     if (!w_obj.remote_git_path) {
-        console.log(chalk.red('仓库地址不可以为空！'));
+        console.log(chalk.red('仓库地址不可以为空，格式 github:用户名/项目#分支'));
         process.exit();
     }
     TPL_PATH = w_obj.remote_git_path;

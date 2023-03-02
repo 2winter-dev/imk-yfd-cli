@@ -12,7 +12,7 @@
 
 #### 如何开始？
 
-``npm i -g imk-yfd-cli``
+``npx imk-cli``
 
 ##### 按照命令行要求你需要输入提供：
 
@@ -56,6 +56,8 @@
 
 ### UPDATE
 
+
+
 v1.0.11
 
 1.fix Doc.
@@ -65,6 +67,11 @@ v2.0.4
 
 1.fix Config.js.tpl Path .
 2.fix others bugs.
+
+2.0.6
+
+1.change READMEmd
+2.add TIPS.
 
 
 > Find Me: winter_986@qq.com
